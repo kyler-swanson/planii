@@ -47,7 +47,7 @@ describe('GET /api/thing', () => {
     // create a sooner thing
     await request(app).post('/api/thing').send(soonThing);
 
-    const { body } = await request(app).get('/api/thing').send('sort=dueDate&desc=1');
+    const { body } = await request(app).get('/api/thing').query({ sort: 'dueDate', desc: 1 });
 
     expect(body.success).toEqual(true);
     expect(body.things).toEqual([soonThing, exampleThing]);
@@ -72,7 +72,7 @@ describe('GET /api/thing', () => {
     await request(app).post('/api/thing').send(householdThing);
     await request(app).post('/api/thing').send(exerciseThing);
 
-    const { body } = await request(app).get('/api/thing').send('groupBy=group');
+    const { body } = await request(app).get('/api/thing').query({ groupBy: 'group' });
 
     expect(body.success).toEqual(true);
     expect(body.groups).toEqual(
