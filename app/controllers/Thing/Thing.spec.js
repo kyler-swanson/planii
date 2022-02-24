@@ -35,6 +35,66 @@ describe('GET /api/thing', () => {
     expect(body.success).toEqual(true);
     expect(body.things).toEqual([exampleThing]);
   });
+
+  test('Get a list of all things sorted by desc dueDate', async () => {
+    const soonThing = {
+      title: 'Go for a run',
+      dueDate: addDaysToDate(new Date(Date.now()), 1),
+      state: 'Todo',
+      group: 'Exercise'
+    };
+
+    // create a sooner thing
+    await request(app).post('/api/thing').send(soonThing);
+
+    const { body } = await request(app).get('/api/thing').send('sort=dueDate&desc=1');
+
+    expect(body.success).toEqual(true);
+    expect(body.things).toEqual([soonThing, exampleThing]);
+  });
+
+  test('Get a list of all things grouped by group', async () => {
+    const householdThing = {
+      title: 'Clean the floors',
+      dueDate: addDaysToDate(new Date(Date.now()), 3),
+      state: 'Todo',
+      group: 'Household'
+    };
+
+    const exerciseThing = {
+      title: 'Go for a run',
+      dueDate: addDaysToDate(new Date(Date.now()), 1),
+      state: 'Todo',
+      group: 'Exercise'
+    };
+
+    // create more things
+    await request(app).post('/api/thing').send(householdThing);
+    await request(app).post('/api/thing').send(exerciseThing);
+
+    const { body } = await request(app).get('/api/thing').send('groupBy=group');
+
+    expect(body.success).toEqual(true);
+    expect(body.groups).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          group: 'Household',
+          things: expect.arrayContaining([exampleThing, householdThing])
+        })
+      ])
+    );
+
+    expect(body.groups).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          group: 'Exercise',
+          things: expect.arrayContaining([exerciseThing])
+        })
+      ])
+    );
+
+    //expect(body.groups).toEqual(expect.arrayContaining([expect.objectContaining({ group: 'Exercise' })]));
+  });
 });
 
 describe('GET /api/thing/:id', () => {
