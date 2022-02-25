@@ -4,7 +4,6 @@ const _ = require('lodash');
 
 const Thing = require('../../models/Thing.model');
 const { thingCreateSchema, thingUpdateSchema } = require('../../schemas');
-const { rest } = require('lodash');
 
 module.exports.getThings = async (req, res, next) => {
   const { sort, groupBy, order } = req.query;
