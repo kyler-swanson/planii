@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const APP_NAME = 'planii';
-const ENV = process.env.NODE_ENV;
+const ENV = process.env.NODE_ENV || 'dev';
 const PORT = process.env.PORT || 8080;
 const MONGODB_HOST = process.env.MONGODB_HOST || '127.0.0.1';
 const MONGODB_COLLECTION = `${APP_NAME}__${ENV}`;
