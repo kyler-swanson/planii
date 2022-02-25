@@ -33,10 +33,10 @@ describe('GET /api/thing', () => {
     const { body } = await request(app).get('/api/thing');
 
     expect(body.success).toEqual(true);
-    expect(body.things).toEqual([exampleThing]);
+    expect(body.things[0]).toMatchObject(exampleThing);
   });
 
-  test('Get a list of all things sorted by desc dueDate', async () => {
+  test('Get a list of all things sorted by asc dueDate', async () => {
     const soonThing = {
       title: 'Go for a run',
       dueDate: addDaysToDate(new Date(Date.now()), 1),
@@ -45,12 +45,14 @@ describe('GET /api/thing', () => {
     };
 
     // create a sooner thing
-    await request(app).post('/api/thing').send(soonThing);
+    await new Thing(soonThing).save();
 
-    const { body } = await request(app).get('/api/thing').query({ sort: 'dueDate', desc: 1 });
+    const { body } = await request(app).get('/api/thing').query({ sort: 'dueDate', order: 'asc' });
 
     expect(body.success).toEqual(true);
-    expect(body.things).toEqual([soonThing, exampleThing]);
+
+    expect(body.things[0]).toMatchObject(soonThing);
+    expect(body.things[1]).toMatchObject(exampleThing);
   });
 
   test('Get a list of all things grouped by group', async () => {
