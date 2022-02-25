@@ -55,6 +55,25 @@ describe('GET /api/thing', () => {
     expect(body.things[1]).toMatchObject(exampleThing);
   });
 
+  test('Get a list of all things sorted dueDate and default order (desc)', async () => {
+    const soonThing = {
+      title: 'Go for a run',
+      dueDate: addDaysToDate(new Date(Date.now()), 1),
+      state: 'Todo',
+      group: 'Exercise'
+    };
+
+    // create a sooner thing
+    await new Thing(soonThing).save();
+
+    const { body } = await request(app).get('/api/thing').query({ sort: 'dueDate' });
+
+    expect(body.success).toEqual(true);
+
+    expect(body.things[0]).toMatchObject(exampleThing);
+    expect(body.things[1]).toMatchObject(soonThing);
+  });
+
   test('Get a list of all things grouped by group', async () => {
     const householdThing = {
       title: 'Clean the floors',
@@ -102,6 +121,12 @@ describe('GET /api/thing/:id', () => {
 
     expect(body.success).toEqual(true);
     expect(body.thing).toMatchObject(exampleThing);
+  });
+
+  test("Get a specific thing with an invalid ID/doesn't exist", async () => {
+    const { body } = await request(app).get('/api/thing/c7sn2ba');
+
+    expect(body.success).toEqual(false);
   });
 });
 
@@ -164,6 +189,12 @@ describe('PATCH /api/item/:id', () => {
 
     expect(body.success).toEqual(true);
     expect(body.thing).toMatchObject({ ...exampleThing, state: 'In progress' });
+  });
+
+  test("Update an invalid things's state", async () => {
+    const { body } = await request(app).patch('/api/thing/1234').send({ state: 'In progress' });
+
+    expect(body.success).toEqual(false);
   });
 });
 
