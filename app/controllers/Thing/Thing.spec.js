@@ -71,17 +71,16 @@ describe('GET /api/thing', () => {
     };
 
     // create more things
-    await request(app).post('/api/thing').send(householdThing);
-    await request(app).post('/api/thing').send(exerciseThing);
+    await new Thing(householdThing).save();
+    await new Thing(exerciseThing).save();
 
     const { body } = await request(app).get('/api/thing').query({ groupBy: 'group' });
-
     expect(body.success).toEqual(true);
     expect(body.groups).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           group: 'Household',
-          things: expect.arrayContaining([exampleThing, householdThing])
+          things: expect.arrayContaining([expect.objectContaining(exampleThing), expect.objectContaining(householdThing)])
         })
       ])
     );
@@ -90,12 +89,10 @@ describe('GET /api/thing', () => {
       expect.arrayContaining([
         expect.objectContaining({
           group: 'Exercise',
-          things: expect.arrayContaining([exerciseThing])
+          things: expect.arrayContaining([expect.objectContaining(exerciseThing)])
         })
       ])
     );
-
-    //expect(body.groups).toEqual(expect.arrayContaining([expect.objectContaining({ group: 'Exercise' })]));
   });
 });
 
@@ -104,7 +101,7 @@ describe('GET /api/thing/:id', () => {
     const { body } = await request(app).get('/api/thing/' + testThing._id.toString());
 
     expect(body.success).toEqual(true);
-    expect(body.thing).toEqual(exampleThing);
+    expect(body.thing).toMatchObject(exampleThing);
   });
 });
 
@@ -118,14 +115,14 @@ describe('POST /api/thing', () => {
     const { body } = await request(app).post('/api/thing').send(incomplete);
 
     expect(body.success).toEqual(true);
-    expect(body.thing).toEqual({ ...incomplete, group: 'No group' });
+    expect(body.thing).toMatchObject({ ...incomplete, group: 'No group' });
   });
 
   test('Create a complete thing', async () => {
     const completeThing = {
       title: 'Prep for Shopify interview',
       desc: 'Todo: review, review, review',
-      dueDate: new Date('March 2, 2022 10:00:00'),
+      dueDate: new Date('March 2, 2022 10:00:00').toISOString(),
       state: 'In progress',
       group: 'Co-op 2022'
     };
@@ -133,7 +130,7 @@ describe('POST /api/thing', () => {
     const { body } = await request(app).post('/api/thing').send(completeThing);
 
     expect(body.success).toEqual(true);
-    expect(body.thing).toEqual(completeThing);
+    expect(body.thing).toMatchObject(completeThing);
   });
 
   test('Create thing with invalid dueDate', async () => {
@@ -166,7 +163,7 @@ describe('PATCH /api/item/:id', () => {
       .send({ state: 'In progress' });
 
     expect(body.success).toEqual(true);
-    expect(body.thing).toEqual({ ...exampleThing, state: 'In progress' });
+    expect(body.thing).toMatchObject({ ...exampleThing, state: 'In progress' });
   });
 });
 
@@ -175,6 +172,6 @@ describe('DELETE /api/thing/:id', () => {
     const { body } = await request(app).delete('/api/thing/' + testThing._id.toString());
 
     expect(body.success).toEqual(true);
-    expect(body.thing).toEqual(exampleThing);
+    expect(body.thing).toMatchObject(exampleThing);
   });
 });
