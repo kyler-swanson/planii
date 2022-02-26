@@ -15,6 +15,18 @@ const thingSchema = new mongoose.Schema(
       type: Date,
       required: false
     },
+    remindDate: {
+      type: Date,
+      required: false
+    },
+    remindNumber: {
+      type: string,
+      required: false
+    },
+    reminded: {
+      type: Boolean,
+      default: false
+    },
     state: {
       type: String,
       required: true,
@@ -29,5 +41,7 @@ const thingSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+thingSchema.index({ dueDate: 1 });
 
 module.exports = mongoose.model('Thing', thingSchema);

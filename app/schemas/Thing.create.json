@@ -12,6 +12,12 @@
     "dueDate": {
       "type": "string"
     },
+    "remindDate": {
+      "type": "string"
+    },
+    "remindNumber": {
+      "type": "string"
+    },
     "state": {
       "type": "string"
     },
