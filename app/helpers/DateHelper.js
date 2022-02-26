@@ -1,3 +1,7 @@
-exports.addDaysToDate = (currentDate, daysToAdd) => {
-  return new Date(currentDate.setDate(currentDate.getDate() + daysToAdd)).toISOString();
+exports.addDaysToDate = (date, daysToAdd) => {
+  return new Date(date.setDate(date.getDate() + daysToAdd)).toISOString();
+};
+
+exports.addSecToDate = (date, sec) => {
+  return date.setSeconds(date.getSeconds() + sec);
 };
