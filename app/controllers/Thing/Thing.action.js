@@ -17,10 +17,12 @@ module.exports.getThings = async (req, res, next) => {
     // sort by a field
     if (sort !== undefined) {
       things = _.orderBy(things, [sort], [order || 'desc']);
+    }
 
-      // group by a field
-    } else if (groupBy !== undefined) {
+    // group by a field
+    if (groupBy !== undefined) {
       groups = _.groupBy(things, groupBy);
+
       groups = Object.keys(groups).map((group) => {
         return {
           group,
