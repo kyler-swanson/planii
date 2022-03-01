@@ -18,6 +18,9 @@
     "remindNumber": {
       "type": "string"
     },
+    "reminded": {
+      "type": "boolean"
+    },
     "state": {
       "type": "string"
     },
