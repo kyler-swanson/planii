@@ -20,7 +20,7 @@ const thingSchema = new mongoose.Schema(
       required: false
     },
     remindNumber: {
-      type: string,
+      type: String,
       required: false
     },
     reminded: {
