@@ -7,13 +7,11 @@ class SMSService {
   }
 
   async sendSMS(msg, toNum) {
-    const msg = await this.client.messages.create({
+    return this.client.messages.create({
       body: msg,
       to: toNum,
       from: this.fromNum
     });
-
-    return msg;
   }
 }
 
