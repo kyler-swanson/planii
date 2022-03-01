@@ -5,7 +5,6 @@ const Thing = require('../models/Thing.model');
 const SMSService = require('./SMSService');
 
 const CLOCK = 2000; // ms
-const BOUNDS = 10; // sec
 
 class ReminderService {
   static async start() {
@@ -19,11 +18,7 @@ class ReminderService {
       await sleep(CLOCK);
       const now = new Date(Date.now());
 
-      // reminder boundaries
-      const gte = addSecToDate(now, -BOUNDS);
-      const lte = addSecToDate(now, +BOUNDS);
-
-      const toRemind = await Thing.find({ remindDate: { $gte: gte, $lte: lte }, reminded: false });
+      const toRemind = await Thing.find({ remindDate: { $lte: now }, reminded: false });
       toRemind.forEach(async (thing) => {
         if (thing.remindNumber) {
           await sms.sendSMS(`plannii: ${thing.title} is due at ${thing.dueDate}!`, thing.remindNumber);
