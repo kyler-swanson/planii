@@ -103,6 +103,14 @@ module.exports.createThing = async (req, res, next) => {
       });
     }
 
+    // check for no remindNumber
+    if (thing.remindDate != undefined && thing.remindNumber == undefined) {
+      return res.status(400).json({
+        success: false,
+        err: 'Missing remindNumber'
+      });
+    }
+
     const result = await thing.save();
 
     res.status(201).json({

@@ -25,11 +25,13 @@ class ReminderService {
 
       const toRemind = await Thing.find({ remindDate: { $gte: gte, $lte: lte }, reminded: false });
       toRemind.forEach(async (thing) => {
-        await sms.sendSMS(`plannii: ${thing.title} is due at ${thing.dueDate}!`, thing.remindNumber);
-        console.log('planii: Sent reminder sent to ' + thing.remindNumber + '!');
+        if (thing.remindNumber) {
+          await sms.sendSMS(`plannii: ${thing.title} is due at ${thing.dueDate}!`, thing.remindNumber);
+          console.log('planii: Sent reminder sent to ' + thing.remindNumber + '!');
 
-        thing.reminded = true;
-        thing.save();
+          thing.reminded = true;
+          thing.save();
+        }
       });
     }
   }
