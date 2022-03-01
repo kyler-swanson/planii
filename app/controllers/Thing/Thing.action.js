@@ -96,7 +96,7 @@ module.exports.createThing = async (req, res, next) => {
     const thing = new Thing(req.body);
 
     // check for invalid dueDate
-    if (thing.dueDate <= Date.now()) {
+    if (thing.dueDate <= new Date(Date.now())) {
       return res.status(400).json({
         success: false,
         err: 'Invalid dueDate'
