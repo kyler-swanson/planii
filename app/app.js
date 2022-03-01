@@ -17,8 +17,10 @@ const routes = require('./routes/routes');
 app.use('/api', routes);
 
 // start remind service
-const { ReminderService } = require('./services');
-ReminderService.start();
+if (process.env.NODE_ENV != 'test') {
+  const { ReminderService } = require('./services');
+  ReminderService.start();
+}
 
 app.use((req, res) => {
   res.status(404).send('404 - Not Found');
