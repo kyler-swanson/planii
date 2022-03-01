@@ -2,7 +2,7 @@ const { sleep } = require('../helpers/ServiceHelper');
 const { addSecToDate } = require('../helpers/DateHelper');
 
 const Thing = require('../models/Thing.model');
-const { SMSService } = require('.');
+const SMSService = require('./SMSService');
 
 const CLOCK = 2000; // ms
 const BOUNDS = 10; // sec
@@ -17,14 +17,16 @@ class ReminderService {
 
     while (true) {
       await sleep(CLOCK);
+      const now = new Date(Date.now());
 
       // reminder boundaries
-      const gte = addSecToDate(Date.now(), -BOUNDS);
-      const lte = addSecToDate(Date.now(), +BOUNDS);
+      const gte = addSecToDate(now, -BOUNDS);
+      const lte = addSecToDate(now, +BOUNDS);
 
-      const toRemind = Thing.find({ remindDate: { $gte: gte, $lte: lte }, reminded: false });
-      toRemind.forEach((thing) => {
-        const msg = await sms.sendSMS(`plannii: ${thing.title} is due at ${thing.dueDate}!`, thing.remindNumber);
+      const toRemind = await Thing.find({ remindDate: { $gte: gte, $lte: lte }, reminded: false });
+      toRemind.forEach(async (thing) => {
+        await sms.sendSMS(`plannii: ${thing.title} is due at ${thing.dueDate}!`, thing.remindNumber);
+        console.log('planii: Sent reminder sent to ' + thing.remindNumber + '!');
 
         thing.reminded = true;
         thing.save();
