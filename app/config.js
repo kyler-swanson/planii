@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const APP_NAME = 'planii';
+const APP_NAME = 'Planii';
 const ENV = process.env.NODE_ENV || 'dev';
 const PORT = process.env.PORT || 8080;
 const MONGODB_HOST = process.env.MONGODB_HOST || '127.0.0.1';
@@ -13,12 +13,10 @@ const connectDb = async () => {
   try {
     await mongoose.connect(MONGODB_URI);
 
-    console.log(`${APP_NAME} successfully connected to database.`);
+    console.log(`${APP_NAME}: successfully connected to database.`);
   } catch (err) {
-    // Dump stack
-    console.error('Could not connect to MongoDB. ' + err);
-
-    // Exit with error code 1
+    // dump stack
+    console.error(`${APP_NAME}: could not connect to MongoDB. ${err}`);
     process.exit(1);
   }
 };

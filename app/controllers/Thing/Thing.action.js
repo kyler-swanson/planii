@@ -9,8 +9,8 @@ module.exports.getThings = async (req, res, next) => {
   const { sort, groupBy, order } = req.query;
 
   try {
-    let things = [];
-    let groups = [];
+    let things,
+      groups = [];
 
     things = await Thing.find({});
 
@@ -23,6 +23,7 @@ module.exports.getThings = async (req, res, next) => {
     if (groupBy !== undefined) {
       groups = _.groupBy(things, groupBy);
 
+      // turn each group into an object with a list of associated things
       groups = Object.keys(groups).map((group) => {
         return {
           group,

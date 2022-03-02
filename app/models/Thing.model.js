@@ -42,6 +42,6 @@ const thingSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-thingSchema.index({ dueDate: 1 });
+thingSchema.index({ remindDate: 1 });
 
 module.exports = mongoose.model('Thing', thingSchema);
